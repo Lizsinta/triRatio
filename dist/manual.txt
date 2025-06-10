@@ -1,9 +1,0 @@
-triRatio Manual
-1. select file(s) by clicking "...". Importing 3 files in once is possible.
-2. clicking "run" to run analysis.
-3. shift + RightClick (drag) on theta-phi map for range selection.
-4. shift + RightClick (double click) for canceling selection.
-5. RightClick on theta-phi map and 2D image for saving the corresponding image.
-5. Control Bar on bottom right can filter out selected points with small r.
-6. SUM/Co/Fe/Mn buttons switches the display of 2D image (SUM=Co+Fe+Mn)
-7. rmax/points/weight buttons switches the display of theta-phi map (weight=rmax*points)
