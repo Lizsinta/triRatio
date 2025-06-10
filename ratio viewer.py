@@ -82,8 +82,12 @@ class ImgGraphicsView(QGraphicsView):
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
             self.dragStartPos = event.pos()
+            menu = QMenu()
+            action = menu.addAction('save')
+            action.triggered.connect(self.save_action)
+            menu.exec(QCursor.pos())
         elif event.button() == Qt.MouseButton.RightButton:
-            if self.range_select and event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
+            if self.range_select:# and event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
                 self.selectStartPos = self.mapToScene(event.pos())
                 self.selectCurrentPos = self.mapToScene(event.pos())
                 self.selectPlot.setRect(self.selectStartPos.x(), self.selectStartPos.y(), 0, 0)
@@ -92,10 +96,7 @@ class ImgGraphicsView(QGraphicsView):
                 # delta = self.selectStartPos - self.selectCurrentPos
                 # if delta.y() == 0 and delta.x() == 0:
                 #     return
-                menu = QMenu()
-                action = menu.addAction('save')
-                action.triggered.connect(self.save_action)
-                menu.exec(QCursor.pos())
+                pass
         return
 
     def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
@@ -110,15 +111,15 @@ class ImgGraphicsView(QGraphicsView):
             pass
         if event.button() == Qt.MouseButton.RightButton:
             if self.range_select:
-                if event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
-                    delta = self.selectStartPos - self.selectCurrentPos
-                    if delta.y() == 0 and delta.x() == 0:
-                        self.sigRangeCancel.emit(0)
-                        self.selectStartPos = QPointF(0, 0)
-                        self.selectCurrentPos = QPointF(0, 0)
-                        self.scene().removeItem(self.selectPlot)
-                    self.sigCal.emit(np.array([self.selectStartPos.y(), self.selectCurrentPos.y(),
-                                                self.selectStartPos.x(), self.selectCurrentPos.x()]).astype(int))
+                #if event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
+                delta = self.selectStartPos - self.selectCurrentPos
+                if delta.y() == 0 and delta.x() == 0:
+                    self.sigRangeCancel.emit(0)
+                    self.selectStartPos = QPointF(0, 0)
+                    self.selectCurrentPos = QPointF(0, 0)
+                    self.scene().removeItem(self.selectPlot)
+                self.sigCal.emit(np.array([self.selectStartPos.y(), self.selectCurrentPos.y(),
+                                            self.selectStartPos.x(), self.selectCurrentPos.x()]).astype(int))
         return
 
     def mouseMoveEvent(self, event):
@@ -133,7 +134,7 @@ class ImgGraphicsView(QGraphicsView):
             self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
         elif event.buttons() == Qt.MouseButton.RightButton:
             if self.range_select:
-                if event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
+                #if event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
                     delta = self.mapToScene(mpt) - self.selectStartPos
                     self.selectCurrentPos = self.mapToScene(mpt)
                     self.selectPlot.setRect(self.selectStartPos.x(), self.selectStartPos.y(), delta.x(), delta.y())
